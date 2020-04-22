@@ -43,6 +43,14 @@ namespace Microwave.Integration.Test
             Assert.That(() => uut.TurnOn(power), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
+        [TestCase(50)]
+        public void TurnOn_alreadyOn_ExceptionThrown(int power)
+        {
+            uut.TurnOn(power);
+            Console.SetOut(consoleOut);
+            Assert.That(() => uut.TurnOn(power), Throws.TypeOf<ApplicationException>());
+        }
+
         [Test]
         public void TurnOff_powerOff_MessageSentToConsole()
         {

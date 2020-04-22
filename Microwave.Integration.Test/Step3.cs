@@ -36,7 +36,7 @@ namespace Microwave.Integration.Test
 
         [TestCase(100)]
         [TestCase(50)]
-        [TestCase(0)]
+        [TestCase(1)]
         public void ShowPower_powerIsShown_MessageSentToConsole(int power)
         {
             Console.SetOut(consoleOut);

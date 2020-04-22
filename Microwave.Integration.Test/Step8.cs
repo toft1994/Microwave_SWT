@@ -5,10 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-
 namespace Microwave.Integration.Test
 {
-    public class Stage12
+    public class Step8
     {
     }
 }

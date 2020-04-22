@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace Microwave.Integration.Test
 {
-    public class Stage6
+    public class Step4
     {
     }
 }

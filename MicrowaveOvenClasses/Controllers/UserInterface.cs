@@ -66,6 +66,10 @@ namespace MicrowaveOvenClasses.Controllers
                     break;
                 case States.SETTIME:
                     time += 1;
+                    if (time > 60)                                      //Added limiter to time (max one hour)
+                    {
+                        time = 1;
+                    }
                     myDisplay.ShowTime(time, 0);
                     break;
             }
@@ -121,6 +125,7 @@ namespace MicrowaveOvenClasses.Controllers
                     break;
                 case States.COOKING:
                     myCooker.Stop();
+                    myDisplay.Clear();                              // Added Display.Clear
                     powerLevel = 50;
                     time = 1;
                     myState = States.DOOROPEN;

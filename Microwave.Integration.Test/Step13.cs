@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MicrowaveOvenClasses.Boundary;
 using MicrowaveOvenClasses.Controllers;
 using MicrowaveOvenClasses.Interfaces;
+using NSubstitute;
 using NUnit.Framework;
 
 
@@ -16,7 +17,6 @@ namespace Microwave.Integration.Test
     {
         private IOutput _output;
         private IDoor _uut;
-        private StringWriter consoleOut;
         private ILight _light;
         private IUserInterface _userInterface;
         private IDisplay _display;
@@ -32,16 +32,15 @@ namespace Microwave.Integration.Test
         public void SetUp()
         {
             _uut = new Door();
-            _output = new Output();
-
+            _output = Substitute.For<IOutput>();
+            
             _powerButton = new Button();
             _timeButton = new Button();
             _startCancelButton = new Button();
             _timer = new Timer();
             _powerTube = new PowerTube(_output);
             _display = new Display(_output);
-            _light = new Light(_output);
-            consoleOut = new StringWriter();
+            _light = new Light(_output); ;
             _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _uut, _display, _light,
                 _cookController);
             _cookController = new CookController(_timer, _display, _powerTube, _userInterface);
@@ -51,18 +50,16 @@ namespace Microwave.Integration.Test
         [Test]
         public void Check_DoorOpen_LightOn()
         {
-            Console.SetOut(consoleOut);
             _uut.Open();
-            Assert.That(consoleOut.ToString().Equals("Light is turned on\r\n"));
+            _output.Received(1).OutputLine("Light is turned on");
         }
 
         [Test]
         public void Check_DoorClose_LightOff()
         {
             _uut.Open();
-            Console.SetOut(consoleOut);
             _uut.Close();
-            Assert.That(consoleOut.ToString().Contains("Light is turned off\r\n"));
+            _output.Received(1).OutputLine("Light is turned on");
         }
     }
 }

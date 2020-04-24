@@ -22,31 +22,28 @@ namespace Microwave.Integration.Test
         private CookController _cookController;
         private PowerTube _powerTube;
         private Timer _timer;
-        private Output _output;
         private Display _display;
 
         //Fake modules necessary for initializing a CookController
         private IUserInterface _userInterface;
+        private IOutput _output;
 
-        //Stringwriter used for capturing output
-        private StringWriter _stringWriter;
+
 
         [SetUp]
         public void Setup()
         {
-            //Initialize the real module normally
-            _timer = new Timer();
-            _output = new Output();
-            _powerTube = new PowerTube(_output);
-            _display = new Display(_output);
             //Create fakes
             _userInterface = Substitute.For<IUserInterface>();
+            _output = Substitute.For<IOutput>();
 
+            //Initialize the real module normally
+            _timer = new Timer();
+            _powerTube = new PowerTube(_output);
+            _display = new Display(_output);
 
             //Initialize top module (CookController)
             _cookController = new CookController(_timer, _display, _powerTube, _userInterface);
-
-            _stringWriter = new StringWriter();
         }
 
         [Test]
@@ -55,10 +52,9 @@ namespace Microwave.Integration.Test
             int power = 10;
             int time = 2;
 
-            Console.SetOut(_stringWriter);
             _cookController.StartCooking(power, time);
 
-            Assert.That(_stringWriter.ToString(), Contains.Substring($"PowerTube works with {power}"));
+            _output.Received(1).OutputLine($"PowerTube works with {power}");
         }
 
         [Test]
@@ -69,30 +65,31 @@ namespace Microwave.Integration.Test
 
             //Call startCooking with the designated time
             _cookController.StartCooking(power, time);
-            Console.SetOut(_stringWriter);
 
             //Wait until that amount of time has passed (converted to milliseconds)
-            Thread.Sleep(time*1000);
+            Thread.Sleep(time*1500);
 
-            Assert.That(_stringWriter.ToString(), Contains.Substring($"PowerTube turned off"));
+            _output.Received(1).OutputLine("PowerTube turned off");
         }
 
         [Test]
         public void StartCooking_OutputCorrectTime()
         {
             int power = 10;
-            int time = 2;
-            _cookController.StartCooking(power, time);
-            Console.SetOut(_stringWriter);
-
-            //If the tick works, there will be a message displaying the initial time
-            int min = time / 60;
-            int sec = time % 60;
-
+            int seconds = 5;
+            _cookController.StartCooking(power, seconds);
+            
             //Wait one second, so the microwave is still on
-            Thread.Sleep(time * 1000);
+            Thread.Sleep(seconds * 1500);
 
-            Assert.That(_stringWriter.ToString(), Contains.Substring($"Display shows: {min:D2}:{sec:D2}"));
+            for (int i = seconds-1; i >= 0; i--)
+            {
+                // Check if all seconds is displayed. 
+                int min = i / 60;
+                int sec = i % 60;
+                
+                _output.Received(1).OutputLine($"Display shows: {min:D2}:{sec:D2}");
+            }
         }
 
         [Test]
@@ -101,9 +98,9 @@ namespace Microwave.Integration.Test
             int power = 10;
             int time = 2;
             _cookController.StartCooking(power, time);
-            Console.SetOut(_stringWriter);
+
             _cookController.Stop();
-            Assert.That(_stringWriter.ToString(), Contains.Substring($"PowerTube turned off"));
+            _output.Received(1).OutputLine("PowerTube turned off");
         }
 
         [Test]
@@ -111,9 +108,8 @@ namespace Microwave.Integration.Test
         {
             //Make sure powertube is already stopped
             _cookController.Stop();
-            Console.SetOut(_stringWriter);
             _cookController.Stop();
-            Assert.That(_stringWriter.ToString(), Is.Empty);
+            _output.Received(0).OutputLine("");
         }
     }
 }

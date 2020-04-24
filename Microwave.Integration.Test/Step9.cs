@@ -69,7 +69,7 @@ namespace Microwave.Integration.Test
             Console.SetOut(_stringWriter);
 
             // Open door
-            _top.OnDoorOpened(this, null);
+            _door.Opened += Raise.Event();
 
             // Check if light turned on
             Assert.That(_stringWriter.ToString(), Is.EqualTo("Light is turned on\r\n"));
@@ -79,13 +79,13 @@ namespace Microwave.Integration.Test
         public void OnDoorClosed_DoorIsOpen_LightTurnedOff()
         {
             // Open door
-            _top.OnDoorOpened(this, null);
+            _door.Opened += Raise.Event();
 
             // Capture output
             Console.SetOut(_stringWriter);
 
             // Close door
-            _top.OnDoorClosed(this, null);
+            _door.Closed += Raise.Event();
 
             // Check if light turned off
             Assert.That(_stringWriter.ToString(), Is.EqualTo("Light is turned off\r\n"));
@@ -95,8 +95,8 @@ namespace Microwave.Integration.Test
         public void OnStartCancelPressed_SetTime_LightTurnedOn()
         {
             // Setup oven
-            _top.OnPowerPressed(this, null);
-            _top.OnTimePressed(this, null);
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
 
             // Capture output
             Console.SetOut(_stringWriter);
@@ -112,9 +112,9 @@ namespace Microwave.Integration.Test
         public void OnCookingIsDone_Cooking_LightTurnedOff()
         {
             // Simulate cooking
-            _top.OnPowerPressed(this, null);
-            _top.OnTimePressed(this, null);
-            _top.OnStartCancelPressed(this, null);
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
+            _startCancelButton.Pressed += Raise.Event();
 
             // State should be cooking for 1 second at 50W
 
@@ -132,17 +132,17 @@ namespace Microwave.Integration.Test
         public void OnStartCancelPressed_DoorIsOpen_NothingHappened()
         {
             // Setup oven for cooking
-            _top.OnPowerPressed(this, null);
-            _top.OnTimePressed(this, null);
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
 
             // Open door
-            _top.OnDoorOpened(this, null);
+            _door.Opened += Raise.Event();
 
             // Capture output
             Console.SetOut(_stringWriter);
 
             // Try to start cooking
-            _top.OnStartCancelPressed(this, null);
+            _startCancelButton.Pressed += Raise.Event();
 
             // Check if light turned on
             Assert.That(_stringWriter.ToString(), Contains.Substring(""));
@@ -152,9 +152,9 @@ namespace Microwave.Integration.Test
         public void OnStartCancelPressed_Cooking_LightTurnedOff()
         {
             // Simulate cooking
-            _top.OnPowerPressed(this, null);
-            _top.OnTimePressed(this, null);
-            _top.OnStartCancelPressed(this, null);
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
+            _startCancelButton.Pressed += Raise.Event();
 
             // State should be cooking for 1 second at 50W
 
@@ -162,27 +162,7 @@ namespace Microwave.Integration.Test
             Console.SetOut(_stringWriter);
 
             // Open door
-            _top.OnStartCancelPressed(this, null);
-
-            // Check if display was cleared after cooking done
-            Assert.That(_stringWriter.ToString(), Contains.Substring("Light is turned off\r\n"));
-        }
-
-        [Test]
-        public void OnDoorOpened_Cooking_LightTurnedOff()
-        {
-            // Simulate cooking
-            _top.OnPowerPressed(this, null);
-            _top.OnTimePressed(this, null);
-            _top.OnStartCancelPressed(this, null);
-
-            // State should be cooking for 1 second at 50W
-
-            // Capture output
-            Console.SetOut(_stringWriter);
-
-            // Open door
-            _top.OnDoorOpened(this, null);
+            _startCancelButton.Pressed += Raise.Event();
 
             // Check if display was cleared after cooking done
             Assert.That(_stringWriter.ToString(), Contains.Substring("Light is turned off\r\n"));

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using NSubstitute;
@@ -10,6 +11,7 @@ using Microwave.Application;
 using MicrowaveOvenClasses.Boundary;
 using MicrowaveOvenClasses.Controllers;
 using MicrowaveOvenClasses.Interfaces;
+using Timer = MicrowaveOvenClasses.Boundary.Timer;
 
 namespace Microwave.Integration.Test
 {
@@ -57,6 +59,81 @@ namespace Microwave.Integration.Test
 
             // Assign _top as _cookController UI
             _cookController.UI = _top;
+        }
+
+        [Test]
+        public void OnStartCancelPressed_SetTime_PowerTubeTurnedOn()
+        {
+            // Simulate cooking
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
+
+            // CookController set up for 1 second of 50W
+
+            // Capture output
+            Console.SetOut(_stringWriter);
+
+            // Press start / cancel button
+            _startCancelButton.Pressed += Raise.Event();
+
+            Assert.That(_stringWriter.ToString(), Contains.Substring("PowerTube works with 50"));
+        }
+
+        [Test]
+        public void CookingIsDone_Cooking_PowerTubeTurnedOff()
+        {
+            // Simulate cooking
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
+            _startCancelButton.Pressed += Raise.Event();
+
+            // CookController set up for 1 second of 50W
+
+            // Capture output
+            Console.SetOut(_stringWriter);
+            
+            // Wait for at least 1 second
+            Thread.Sleep(1500);
+
+            Assert.That(_stringWriter.ToString(), Contains.Substring("PowerTube turned off"));
+        }
+
+        [Test]
+        public void OnDoorOpened_Cooking_PowerTubeTurnedOff()
+        {
+            // Simulate cooking
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
+            _startCancelButton.Pressed += Raise.Event();
+
+            // CookController set up for 1 second of 50W
+
+            // Capture output
+            Console.SetOut(_stringWriter);
+
+            // Open door while cooking
+            _door.Opened += Raise.Event();
+
+            Assert.That(_stringWriter.ToString(), Contains.Substring("PowerTube turned off"));
+        }
+
+        [Test]
+        public void OnStartCancelButton_Cooking_PowerTubeTurnedOff()
+        {
+            // Simulate cooking
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
+            _startCancelButton.Pressed += Raise.Event();
+
+            // CookController set up for 1 second of 50W
+
+            // Capture output
+            Console.SetOut(_stringWriter);
+
+            // Open door while cooking
+            _startCancelButton.Pressed += Raise.Event();
+
+            Assert.That(_stringWriter.ToString(), Contains.Substring("PowerTube turned off"));
         }
     }
 }

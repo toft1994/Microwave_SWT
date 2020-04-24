@@ -90,14 +90,14 @@ namespace Microwave.Integration.Test
             for (int i = 0; i < presses - 1; i++)
             {
                 // Press button once
-                _top.OnPowerPressed(this, null);
+                _powerButton.Pressed += Raise.Event();
             }
 
             // Capture output
             Console.SetOut(_stringWriter);
 
             // Press button one last time
-            _top.OnPowerPressed(this, null);
+            _powerButton.Pressed += Raise.Event();
 
             // Check if light turned off
             Assert.That(_stringWriter.ToString(), Is.EqualTo(response));
@@ -127,20 +127,20 @@ namespace Microwave.Integration.Test
             }
 
             // Press power once
-            _top.OnPowerPressed(this, null);
+            _powerButton.Pressed += Raise.Event();
 
             // Press presses times -1
             for (int i = 0; i < presses - 1; i++)
             {
                 // Press button once
-                _top.OnTimePressed(this, null);
+                _timeButton.Pressed += Raise.Event();
             }
 
             // Capture output
             Console.SetOut(_stringWriter);
 
             // Press button one last time
-            _top.OnTimePressed(this, null);
+            _timeButton.Pressed += Raise.Event();
 
             // Check if light turned off
             Assert.That(_stringWriter.ToString(), Is.EqualTo(response));
@@ -150,9 +150,9 @@ namespace Microwave.Integration.Test
         public void OnCookingIsDone_Cooking_DisplayIsCleared()
         {
             // Simulate cooking
-            _top.OnPowerPressed(this, null);
-            _top.OnTimePressed(this, null);
-            _top.OnStartCancelPressed(this, null);
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
+            _startCancelButton.Pressed += Raise.Event();
 
             // State should be cooking for 1 second at 50W
 
@@ -170,9 +170,9 @@ namespace Microwave.Integration.Test
         public void OnDoorOpened_Cooking_DisplayIsCleared()
         {
             // Simulate cooking
-            _top.OnPowerPressed(this, null);
-            _top.OnTimePressed(this, null);
-            _top.OnStartCancelPressed(this, null);
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
+            _startCancelButton.Pressed += Raise.Event();
 
             // State should be cooking for 1 second at 50W
 
@@ -180,7 +180,7 @@ namespace Microwave.Integration.Test
             Console.SetOut(_stringWriter);
 
             // Open door while cooking
-            _top.OnDoorOpened(this, null);
+            _door.Opened += Raise.Event();
 
             // Check if display was cleared after cooking done
             Assert.That(_stringWriter.ToString(), Contains.Substring("Display cleared"));
@@ -190,9 +190,9 @@ namespace Microwave.Integration.Test
         public void OnStartCancelPressed_Cooking_DisplayIsCleared()
         {
             // Simulate cooking
-            _top.OnPowerPressed(this, null);
-            _top.OnTimePressed(this, null);
-            _top.OnStartCancelPressed(this, null);
+            _powerButton.Pressed += Raise.Event();
+            _timeButton.Pressed += Raise.Event();
+            _startCancelButton.Pressed += Raise.Event();
 
             // State should be cooking for 1 second at 50W
 
@@ -200,7 +200,7 @@ namespace Microwave.Integration.Test
             Console.SetOut(_stringWriter);
 
             // Open door while cooking
-            _top.OnStartCancelPressed(this, null);
+            _startCancelButton.Pressed += Raise.Event();
 
             // Check if display was cleared after cooking done
             Assert.That(_stringWriter.ToString(), Contains.Substring("Display cleared"));

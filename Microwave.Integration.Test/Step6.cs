@@ -46,11 +46,11 @@ namespace Microwave.Integration.Test
         public void Start_OutputRemainingTime()
         {
             Console.SetOut(_stringWriter);
-            int time = 2;
+            int time = 120;
             _timer.Start(time);
 
-            int min = time / 60;
-            int sec = time % 60;
+            int min = time-1 / 60;
+            int sec = time-1 % 60;
             Thread.Sleep(time*1000);
             Assert.That(_stringWriter.ToString(), Contains.Substring($"Display shows: {min:D2}:{sec:D2}"));
         }

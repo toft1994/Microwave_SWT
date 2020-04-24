@@ -49,8 +49,9 @@ namespace Microwave.Integration.Test
             int time = 120;
             _timer.Start(time);
 
-            int min = time-1 / 60;
-            int sec = time-1 % 60;
+            int sec = 59;
+            int min = 1;
+
             Thread.Sleep(time*1000);
             Assert.That(_stringWriter.ToString(), Contains.Substring($"Display shows: {min:D2}:{sec:D2}"));
         }

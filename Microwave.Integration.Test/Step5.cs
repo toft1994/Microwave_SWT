@@ -76,7 +76,7 @@ namespace Microwave.Integration.Test
         public void StartCooking_OutputCorrectTime()
         {
             int power = 10;
-            int seconds = 5;
+            int seconds = 2;
             _cookController.StartCooking(power, seconds);
             
             //Wait one second, so the microwave is still on

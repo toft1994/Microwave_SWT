@@ -17,8 +17,8 @@ namespace MicrowaveOvenClasses.Controllers
         private ILight myLight;
         private IDisplay myDisplay;
 
-        private int powerLevel = 50;
-        private int time = 1;
+        private uint powerLevel = 50;
+        private uint time = 1;
 
         public UserInterface(
             IButton powerButton,

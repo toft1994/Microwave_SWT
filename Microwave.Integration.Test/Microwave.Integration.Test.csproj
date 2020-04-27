@@ -67,6 +67,7 @@
     <Compile Include="Step12.cs" />
     <Compile Include="Step13.cs" />
     <Compile Include="Step14.cs" />
+    <Compile Include="Step15.cs" />
     <Compile Include="Step2.cs" />
     <Compile Include="Step3.cs" />
     <Compile Include="Step4.cs" />

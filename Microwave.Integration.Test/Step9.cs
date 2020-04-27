@@ -121,7 +121,7 @@ namespace Microwave.Integration.Test
             // Capture output
             Console.SetOut(_stringWriter);
 
-            // Wait for at least 1 second
+            // Wait for at least 61 second
             Thread.Sleep(61000);
 
             // Check if display was cleared after cooking done

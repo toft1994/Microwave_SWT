@@ -56,7 +56,9 @@ namespace Microwave.Integration.Test
             _buttonPower.Pressed += Raise.Event();
             _buttonTime.Pressed += Raise.Event();
             _buttonStartCancel.Pressed += Raise.Event();
-            Thread.Sleep(1500);
+
+            // Time is multiplied by 60 because its the lowest time
+            Thread.Sleep(1100*60);
 
             _output.Received(1).OutputLine("Light is turned off");
         }
@@ -69,7 +71,8 @@ namespace Microwave.Integration.Test
             _buttonPower.Pressed += Raise.Event();
             _buttonTime.Pressed += Raise.Event();
             _buttonStartCancel.Pressed += Raise.Event();
-            Thread.Sleep(1500);
+            // Time is multiplied by 60 because its the lowest time
+            Thread.Sleep(1100 * 60);
 
             _output.Received(1).OutputLine("Display cleared");
         }

@@ -160,7 +160,7 @@ namespace Microwave.Integration.Test
             Console.SetOut(_stringWriter);
 
             // Wait for at least 1 second
-            Thread.Sleep(1500);
+            Thread.Sleep(61000);
 
             // Check if display was cleared after cooking done
             Assert.That(_stringWriter.ToString(), Contains.Substring("Display cleared"));

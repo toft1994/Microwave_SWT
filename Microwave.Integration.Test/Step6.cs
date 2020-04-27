@@ -46,13 +46,29 @@ namespace Microwave.Integration.Test
         public void Start_OutputRemainingTime()
         {
             Console.SetOut(_stringWriter);
-            int time = 2;
+            int time = 120;
             _timer.Start(time);
 
-            int min = time / 60;
-            int sec = time % 60;
+            int sec = 59;
+            int min = 1;
+
             Thread.Sleep(time*1000);
             Assert.That(_stringWriter.ToString(), Contains.Substring($"Display shows: {min:D2}:{sec:D2}"));
+        }
+
+        [Test]
+        public void Stop_OutputNothing()
+        {
+            Console.SetOut(_stringWriter);
+            int time = 120;
+            _timer.Start(time);
+            _timer.Stop();
+
+            int sec = 59;
+            int min = 1;
+
+            Thread.Sleep(time * 1000);
+            Assert.That(_stringWriter.ToString(), Contains.Substring($""));
         }
     }
 }

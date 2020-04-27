@@ -93,7 +93,7 @@ namespace Microwave.Integration.Test
             Console.SetOut(_stringWriter);
             
             // Wait for at least 1 second
-            Thread.Sleep(1500);
+            Thread.Sleep(61000);
 
             Assert.That(_stringWriter.ToString(), Contains.Substring("PowerTube turned off"));
         }

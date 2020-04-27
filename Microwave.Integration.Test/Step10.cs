@@ -49,7 +49,7 @@ namespace Microwave.Integration.Test
         }
 
         [Test]
-        public void NAMENEEDED()
+        public void CookingIsDone_LightIsTurnedOff_InfoSentToConsole()
         {
             // To stimulate CookingIsDone() we need to set the UI state to COOKING.
             // Therefore we need to stimulate the events from the buttons! 
@@ -64,7 +64,7 @@ namespace Microwave.Integration.Test
         }
 
         [Test]
-        public void NAMENEEDED_()
+        public void CookingIsDone_DisplayCleared_InfoSentToConsole()
         {
             // To stimulate CookingIsDone() we need to set the UI state to COOKING.
             // Therefore we need to stimulate the events from the buttons!

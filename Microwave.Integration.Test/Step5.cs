@@ -18,98 +18,53 @@ namespace Microwave.Integration.Test
     [TestFixture]
     class Step5
     {
-        //All the necessary (real) modules
         private CookController _cookController;
         private PowerTube _powerTube;
         private Timer _timer;
+        private Output _output;
         private Display _display;
 
-        //Fake modules necessary for initializing a CookController
         private IUserInterface _userInterface;
-        private IOutput _output;
 
-
+        private StringWriter _stringWriter;
 
         [SetUp]
         public void Setup()
         {
-            //Create fakes
-            _userInterface = Substitute.For<IUserInterface>();
-            _output = Substitute.For<IOutput>();
-
-            //Initialize the real module normally
+            //Initialize modules
             _timer = new Timer();
+            _output = new Output();
             _powerTube = new PowerTube(_output);
             _display = new Display(_output);
-
-            //Initialize top module (CookController)
+            _userInterface = Substitute.For<IUserInterface>();
             _cookController = new CookController(_timer, _display, _powerTube, _userInterface);
+
+            _stringWriter = new StringWriter();
         }
 
         [Test]
-        public void StartCooking_PowerTubeTurnsOn()
+        public void Start_OutputRemainingTime()
         {
-            int power = 10;
+            Console.SetOut(_stringWriter);
             int time = 2;
+            _timer.Start(time);
 
-            _cookController.StartCooking(power, time);
+            int sec = 1;
+            int min = 0;
 
-            _output.Received(1).OutputLine($"PowerTube works with {power}");
-        }
-
-        [Test]
-        public void StartCooking_PowerTubeTurnsOff()
-        {
-            int power = 10;
-            int time = 2;
-
-            //Call startCooking with the designated time
-            _cookController.StartCooking(power, time);
-
-            //Wait until that amount of time has passed (converted to milliseconds)
             Thread.Sleep(time*1500);
-
-            _output.Received(1).OutputLine("PowerTube turned off");
+            Assert.That(_stringWriter.ToString(), Contains.Substring($"Display shows: {min:D2}:{sec:D2}"));
         }
 
         [Test]
-        public void StartCooking_OutputCorrectTime()
+        public void Stop_OutputNothing()
         {
-            int power = 10;
-            int seconds = 2;
-            _cookController.StartCooking(power, seconds);
-            
-            //Wait one second, so the microwave is still on
-            Thread.Sleep(seconds * 1500);
-
-            for (int i = seconds-1; i >= 0; i--)
-            {
-                // Check if all seconds is displayed. 
-                int min = i / 60;
-                int sec = i % 60;
-                
-                _output.Received(1).OutputLine($"Display shows: {min:D2}:{sec:D2}");
-            }
-        }
-
-        [Test]
-        public void StopCooking_WhileRunning_PowerTubeStops()
-        {
-            int power = 10;
+            Console.SetOut(_stringWriter);
             int time = 2;
-            _cookController.StartCooking(power, time);
-
-            _cookController.Stop();
-            _output.Received(1).OutputLine("PowerTube turned off");
-        }
-
-        [Test]
-        public void StopCooking_WhileNotRunning_NothingHappens()
-        {
-            //Make sure powertube is already stopped
-            _cookController.Stop();
-            _cookController.Stop();
-            _output.Received(0).OutputLine("");
+            _timer.Start(time);
+            _timer.Stop();
+            Thread.Sleep(time * 1000);
+            Assert.That(_stringWriter.ToString(), Contains.Substring($""));
         }
     }
 }

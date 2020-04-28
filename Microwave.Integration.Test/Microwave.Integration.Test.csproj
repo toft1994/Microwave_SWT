@@ -63,17 +63,17 @@
     <Compile Include="Step1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Step10.cs" />
-    <Compile Include="Step11.cs" />
     <Compile Include="Step12.cs" />
     <Compile Include="Step13.cs" />
     <Compile Include="Step14.cs" />
     <Compile Include="Step15.cs" />
+    <Compile Include="Step7.cs" />
     <Compile Include="Step2.cs" />
     <Compile Include="Step3.cs" />
     <Compile Include="Step4.cs" />
-    <Compile Include="Step5.cs" />
     <Compile Include="Step6.cs" />
-    <Compile Include="Step7.cs" />
+    <Compile Include="Step5.cs" />
+    <Compile Include="Step11.cs" />
     <Compile Include="Step8.cs" />
     <Compile Include="Step9.cs" />
   </ItemGroup>

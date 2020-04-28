@@ -3,137 +3,60 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
-using NSubstitute;
-using Microwave.Application;
 using MicrowaveOvenClasses.Boundary;
 using MicrowaveOvenClasses.Controllers;
 using MicrowaveOvenClasses.Interfaces;
-using Timer = MicrowaveOvenClasses.Boundary.Timer;
+using NSubstitute;
+using NUnit.Framework;
+using NUnit.Framework.Internal;
 
 namespace Microwave.Integration.Test
 {
     [TestFixture]
-    public class Step7
+    class Step7_new
     {
-        // Real modules
-        private UserInterface _top;
+        //Real modules
         private Display _display;
-        private Light _light;
-        private CookController _cookController;
         private Output _output;
-        private PowerTube _powerTube;
-        private Timer _timer;
-        private StringWriter _stringWriter;
+        private CookController _cookController;
 
-        // Fake modules
-        private IButton _powerButton;
-        private IButton _timeButton;
-        private IButton _startCancelButton;
-        private IDoor _door;
+        //Faked modules
+        private IPowerTube _powerTube;
+        private ITimer _timer;
+        private IUserInterface _userInterface;
+
+        private StringWriter _stringWriter;
 
         [SetUp]
         public void Setup()
         {
-            // Initiate real modules
+            _userInterface = Substitute.For<IUserInterface>();
+            _timer = Substitute.For<ITimer>();
+            _powerTube = Substitute.For<IPowerTube>();
+
             _output = new Output();
             _display = new Display(_output);
-            _light = new Light(_output);
-            _powerTube = new PowerTube(_output);
-            _timer = new Timer();
             _cookController = new CookController(_timer, _display, _powerTube);
 
-            // Create fakes
-            _powerButton = Substitute.For<IButton>();
-            _timeButton = Substitute.For<IButton>();
-            _startCancelButton = Substitute.For<IButton>();
-            _door = Substitute.For<IDoor>();
-
-            // Capture output using stringWriter
             _stringWriter = new StringWriter();
-
-            // Create Top
-            _top = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
-
-            // Assign _top as _cookController UI
-            _cookController.UI = _top;
         }
 
         [Test]
-        public void OnStartCancelPressed_SetTime_PowerTubeTurnedOn()
+        public void OnTimerTick_DisplayUpdated()
         {
-            // Simulate cooking
-            _powerButton.Pressed += Raise.Event();
-            _timeButton.Pressed += Raise.Event();
+            //Use NSubstitute to make the time remaining return 74 seconds
+            int time = 74;
+            _timer.TimeRemaining.Returns(time);
 
-            // CookController set up for 1 second of 50W
+            int min = time / 60;
+            int sec = time % 60;
 
-            // Capture output
             Console.SetOut(_stringWriter);
+            //Raise the timer tick event, triggering the OnTimerTick event handler in CookController
+            _timer.TimerTick += Raise.EventWith(new object(), new EventArgs());
 
-            // Press start / cancel button
-            _startCancelButton.Pressed += Raise.Event();
-
-            Assert.That(_stringWriter.ToString(), Contains.Substring("PowerTube works with 50"));
-        }
-
-        [Test]
-        public void CookingIsDone_Cooking_PowerTubeTurnedOff()
-        {
-            // Simulate cooking
-            _powerButton.Pressed += Raise.Event();
-            _timeButton.Pressed += Raise.Event();
-            _startCancelButton.Pressed += Raise.Event();
-
-            // CookController set up for 1 second of 50W
-
-            // Capture output
-            Console.SetOut(_stringWriter);
-            
-            // Wait for at least 1 second
-            Thread.Sleep(61000);
-
-            Assert.That(_stringWriter.ToString(), Contains.Substring("PowerTube turned off"));
-        }
-
-        [Test]
-        public void OnDoorOpened_Cooking_PowerTubeTurnedOff()
-        {
-            // Simulate cooking
-            _powerButton.Pressed += Raise.Event();
-            _timeButton.Pressed += Raise.Event();
-            _startCancelButton.Pressed += Raise.Event();
-
-            // CookController set up for 1 second of 50W
-
-            // Capture output
-            Console.SetOut(_stringWriter);
-
-            // Open door while cooking
-            _door.Opened += Raise.Event();
-
-            Assert.That(_stringWriter.ToString(), Contains.Substring("PowerTube turned off"));
-        }
-
-        [Test]
-        public void OnStartCancelButton_Cooking_PowerTubeTurnedOff()
-        {
-            // Simulate cooking
-            _powerButton.Pressed += Raise.Event();
-            _timeButton.Pressed += Raise.Event();
-            _startCancelButton.Pressed += Raise.Event();
-
-            // CookController set up for 1 second of 50W
-
-            // Capture output
-            Console.SetOut(_stringWriter);
-
-            // Open door while cooking
-            _startCancelButton.Pressed += Raise.Event();
-
-            Assert.That(_stringWriter.ToString(), Contains.Substring("PowerTube turned off"));
+            Assert.That(_stringWriter.ToString(), Contains.Substring($"Display shows: {min:D2}:{sec:D2}"));
         }
     }
 }

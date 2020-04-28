@@ -13,7 +13,7 @@ using NUnit.Framework;
 
 namespace Microwave.Integration.Test
 {
-    public class Step13
+    public class Step14
     {
         private IOutput _output;
         private IDoor _uut;

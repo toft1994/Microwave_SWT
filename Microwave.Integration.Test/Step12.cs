@@ -14,7 +14,7 @@ using Timer = MicrowaveOvenClasses.Boundary.Timer;
 
 namespace Microwave.Integration.Test
 {
-    public class Step11
+    public class Step12
     {
 
         private IOutput _output;

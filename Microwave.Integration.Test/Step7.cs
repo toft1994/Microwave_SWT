@@ -14,7 +14,7 @@ using NUnit.Framework.Internal;
 namespace Microwave.Integration.Test
 {
     [TestFixture]
-    class Step7_new
+    class Step7
     {
         //Real modules
         private Display _display;

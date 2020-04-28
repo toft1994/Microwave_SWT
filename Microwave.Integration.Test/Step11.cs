@@ -16,7 +16,7 @@ using Timer = MicrowaveOvenClasses.Boundary.Timer;
 namespace Microwave.Integration.Test
 {
     [TestFixture]
-    public class Step7
+    public class Step11
     {
         // Real modules
         private UserInterface _top;
